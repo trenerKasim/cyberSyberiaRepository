@@ -9,6 +9,9 @@ public class scoreCounter : MonoBehaviour
     private TextMeshProUGUI label;
     [SerializeField]
     private TextMeshProUGUI endLabel;
+    [SerializeField]
+    private GameObject wqinPanel;
+
 
     [SerializeField]
     private int score;
@@ -28,5 +31,10 @@ public class scoreCounter : MonoBehaviour
 	{
         score += points;
         showScore();
+        if(score>430)
+		{
+            wqinPanel.SetActive(true);
+		}
 	}
+
 }

@@ -89,6 +89,12 @@ public class playerController : MonoBehaviour
     [SerializeField]
     private TextMeshProUGUI healthLabel;
 
+
+    public void loadMenu()
+    {
+        SceneManager.LoadScene(0);
+    }
+
     void Update()
     {
         ammoLabel.text = weapon[weaponInUse].CurrentBullets + "/" + weapon[weaponInUse].BulletsPerMag;
@@ -96,6 +102,13 @@ public class playerController : MonoBehaviour
         if (weaponInUse == 1) { weaponLabel.text = "Finger Gun"; ammoLabel.text = "∞"; }
         healthLabel.text = currenthp + "/" + hp;
         //player.transform.Rotate(0, 0.2f, 0);
+
+        if (Input.GetKey(KeyCode.P))
+        {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+            loadMenu();
+        }
         if (alive)
         {
             if(currenthp<hp)
