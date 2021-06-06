@@ -42,6 +42,7 @@ public class EnemyHP : MonoBehaviour
     {
         alive = true;
         currenthp = hp;
+		agent = GetComponent<NavMeshAgent>();
     }
 
 

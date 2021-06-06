@@ -30,7 +30,7 @@ public class playerController : MonoBehaviour
     [SerializeField]
     float fireTimer;
     [SerializeField]
-    [Range(5, 30)]
+    [Range(1, 10)]
     private float moveSpeed;
 
     [SerializeField]
@@ -46,9 +46,12 @@ public class playerController : MonoBehaviour
     [SerializeField]
     private bool isGrounded;
     private Vector3 jump;
-    private Rigidbody rigidbody;
+    //private Rigidbody rigidbody;
 
-    [SerializeField]
+	[SerializeField]
+	private CharacterController controller;
+
+	[SerializeField]
     private GameObject player;
     [SerializeField]
     private GameObject camera;
@@ -74,7 +77,7 @@ public class playerController : MonoBehaviour
     void Start()
 	{
         Cursor.lockState = CursorLockMode.Locked;
-        rigidbody = GetComponent<Rigidbody>();
+        //rigidbody = GetComponent<Rigidbody>();
         jump = new Vector3(0.0f, 2.0f, 0.0f); 
         alive = true;
         currenthp = hp;
@@ -134,7 +137,7 @@ public class playerController : MonoBehaviour
         }
     }
 
-    public void restart()
+	public void restart()
 	{
         SceneManager.LoadScene(1);
 	}
@@ -149,18 +152,39 @@ public class playerController : MonoBehaviour
 
     void movePlayer()
     {
-        //handsAnimator.SetBool("isReloading", false);
-        if (Input.GetKey(KeyCode.W)) { player.transform.Translate(Vector3.forward * Time.deltaTime * moveSpeed); }
-        if (Input.GetKey(KeyCode.S)) { player.transform.Translate(-Vector3.forward * Time.deltaTime * moveSpeed); }
-        if (Input.GetKey(KeyCode.A)) { player.transform.Translate(Vector3.left * Time.deltaTime * moveSpeed); }
-        if (Input.GetKey(KeyCode.D)) { player.transform.Translate(Vector3.right * Time.deltaTime * moveSpeed); }
-        if (Input.GetKeyDown(KeyCode.LeftShift)) { rigidbody.velocity = new Vector3(0,0,0); };
-        rotationX += rotationSpeed * Input.GetAxis("Mouse X");
+		//handsAnimator.SetBool("isReloading", false);
+		//if (Input.GetKey(KeyCode.W)) { player.transform.Translate(Vector3.forward * Time.deltaTime * moveSpeed); }
+		//if (Input.GetKey(KeyCode.W)) { rigidbody.MovePosition(transform.position + transform.forward.normalized * Time.deltaTime * moveSpeed); }
+		//if (Input.GetKey(KeyCode.W)) { rigidbody.velocity += (10 * transform.forward.normalized * Time.deltaTime * moveSpeed); }
+		//if (Input.GetKey(KeyCode.W)) { rigidbody.velocity = (100 * transform.forward.normalized * Time.deltaTime * moveSpeed); }
+		if (Input.GetKey(KeyCode.W)) { controller.Move(transform.forward.normalized * Time.deltaTime * moveSpeed * 2); }
+		if (Input.GetKey(KeyCode.S)) { controller.Move(-transform.forward.normalized * Time.deltaTime * moveSpeed * 2); }
+		if (Input.GetKey(KeyCode.A)) { controller.Move(-transform.right.normalized * Time.deltaTime * moveSpeed * 2); }
+		if (Input.GetKey(KeyCode.D)) { controller.Move(transform.right.normalized * Time.deltaTime * moveSpeed * 2); }
+		//else { rigidbody.velocity = new Vector3(0, 0, 0); }
+		//if (Input.GetKey(KeyCode.S)) { rigidbody.velocity = (100 * -transform.forward.normalized * Time.deltaTime * moveSpeed); }
+		//if (Input.GetKey(KeyCode.A)) { rigidbody.velocity = (100 * -transform.right.normalized * Time.deltaTime * moveSpeed); }
+		//if (Input.GetKey(KeyCode.D)) { rigidbody.velocity = (100 * transform.right.normalized * Time.deltaTime * moveSpeed); }
+		//rigidbody.velocity = new Vector3(Mathf.Clamp(rigidbody.velocity.x, -moveSpeed, moveSpeed), rigidbody.velocity.y, Mathf.Clamp(rigidbody.velocity.z, -moveSpeed, moveSpeed));
+		//else { rigidbody.velocity = new Vector3(0, 0, 0); }
+		//if (Input.GetKey(KeyCode.S)) { rigidbody.MovePosition(transform.position + -transform.forward.normalized * Time.deltaTime * moveSpeed); }
+		//if (Input.GetKey(KeyCode.A)) { rigidbody.MovePosition(transform.position + -transform.right.normalized * Time.deltaTime * moveSpeed); }
+		//if (Input.GetKey(KeyCode.D)) { rigidbody.MovePosition(transform.position + transform.right.normalized * Time.deltaTime * moveSpeed); }
+		//if (Input.GetKey(KeyCode.S)) { player.transform.Translate(-Vector3.forward * Time.deltaTime * moveSpeed); }
+		//if (Input.GetKey(KeyCode.A)) { player.transform.Translate(Vector3.left * Time.deltaTime * moveSpeed); }
+		//if (Input.GetKey(KeyCode.D)) { player.transform.Translate(Vector3.right * Time.deltaTime * moveSpeed); }
+		//if (Input.GetKeyDown(KeyCode.LeftShift)) { rigidbody.velocity = new Vector3(0,0,0); };
+		rotationX += rotationSpeed * Input.GetAxis("Mouse X");
         rotationY -= rotationSpeed * Input.GetAxis("Mouse Y");
         player.transform.eulerAngles = new Vector3(player.transform.rotation.x, rotationX, 0f);
         camera.transform.eulerAngles = new Vector3(Mathf.Clamp(rotationY, -20, 35), rotationX, 0f);
         playerHands.transform.eulerAngles = new Vector3(Mathf.Clamp(rotationY, -15, 18), rotationX, 0f);
-        if (Input.GetKey(KeyCode.Space) && isGrounded) {/*Debug.Log("はい");*/ rigidbody.AddForce(jump * jumpForce, ForceMode.Impulse); isGrounded = false; }
+        if (Input.GetKey(KeyCode.Space) && isGrounded) {/*Debug.Log("はい");*/ controller.Move(transform.up * jumpForce); isGrounded = false; }
+		//controller.Move(new Vector3(controller.velocity.x,controller.velocity.y -= 1 * Time.deltaTime, controller.velocity.z);
+		if(!Input.GetKey(KeyCode.W) && !Input.GetKey(KeyCode.S) && !Input.GetKey(KeyCode.A) && !Input.GetKey(KeyCode.D)&& isGrounded)
+		{
+			//rigidbody.velocity = Vector3.zero;
+		}
         if (fireTimer > 0)
         {
             fireTimer -= Time.deltaTime;

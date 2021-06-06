@@ -17,7 +17,7 @@ public class bulletScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        this.transform.Translate(Vector3.forward * Time.deltaTime * 100);
+        this.transform.Translate(Vector3.forward * Time.deltaTime * 50);
         //GetComponent<Rigidbody>().AddForce(Vector3.forward * 500, ForceMode.Impulse);
     }
 
@@ -38,6 +38,8 @@ public class bulletScript : MonoBehaviour
         }
         else if (col.GetComponent<EnemyHP>())
 		{
+			if (!friendly)
+			{ return; }
             col.GetComponent<EnemyHP>().TakeDamage(Random.Range(damageRange[0],damageRange[1]));
 		}
         Destroy(this.gameObject);
